@@ -8,4 +8,3 @@
  light the other end of said second rope.....then it will burn in 15 minutes.
 
 """
-

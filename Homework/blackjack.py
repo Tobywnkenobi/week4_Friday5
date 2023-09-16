@@ -39,10 +39,10 @@ class Hand:
     def get_value(self):
         card_value = sum(card.get_value() for card in self.cards)
         aces = sum(1 for card in self.cards if card.rank == "Ace")
-        while value > 21 and aces:
-            value -= 10
+        while card_value > 21 and aces:
+            card_value -= 10
             aces -= 1
-        return value
+        return card_value
     
     def __str__(self):
         return ", ".join(str(card) for card in self.cards)
@@ -66,9 +66,64 @@ class Player:
 
 class Game:
     def __init__(self):
-        pass
+        self.deck = Deck()
+        self.player = Player()
+        self.dealer = Hand()
+
     def play(self):
-        pass
+        while self.player.bankroll > 0:
+            self.deck.shuffle()
+            self.player.hand = Hand()
+            self.dealer = Hand()
+
+            bet_amount = int(input(f"You have {self.player.bankroll}. Enter your bet: "))
+            if not self.player.bet(bet_amount):
+                print("Insufficient funds!")
+                continue
+
+        for _ in range (2):
+            self.player.hand.add_cards(self.deck.deal())
+            self.dealer.add_cards(self.deck.deal())
+
+        print(f"Your hand: {self.player.hand}")
+        print(f"Dealer's first card: {self.dealer.cards[0]}")
+
+        #Player turn
+        while self.player.hand.get_value() < 21:
+            action = input("Hit or Stand? ").lower()
+            if action == "hit":
+                self.player.hand.add_cards(self.deck.deal())
+                print(f"Your hand: {self.player.hand}")
+            elif action == "stand":
+                break
+
+        #Dealer
+
+        while self.dealer.get_value() < 17:
+            self.dealer.add_cards(self.deck.deal())
+
+        print(f"Dealer's hand: {self.dealer}")
+
+        if self.player.hand.get_value() > 21:
+            print("Busted! House Wins!")
+        elif self.dealer.get_value() > 21:
+            print("Dealer busts! You win!!")
+            self.player.win(2 *bet_amount)
+        elif self.player.hand.get_value() > self.dealer.get_value():
+            print("You win!")
+            self.player.win(2 * bet_amount)
+        elif self.player.hand.get_value() == self.dealer.get_value():
+            print("It's a tie!")
+            self.player.win(bet_amount)
+        else:
+            print("Dealer Wins!")
+        
+            play_again = input("Do you want to play again? (yes or no) ").lower()
+            if play_again != "yes":
+                break
+                               
+
+        print("Thanks for playing, come again!!")
 
 if __name__ == "__main__":
     game = Game()

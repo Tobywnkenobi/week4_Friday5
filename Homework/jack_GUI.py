@@ -70,6 +70,17 @@ class Game:
         self.player = Player()
         self.dealer = Hand()
 
+        self.start_new_game()
+
+    def start_new_game(self):
+        self.deck.shuffle()
+        self.player.hand = Hand()
+        self.dealer = Hand()
+
+        for _ in range(2):
+            self.player.hand.add_cards(self.deck.deal())
+            self.dealer.add_cards(self.deck.deal())
+
     def play(self):
         # while self.player.bankroll > 0:
         #     self.deck.shuffle()

@@ -9,6 +9,21 @@ class BJ_GUI:
 
         self.game = Game()
 
+        #bet amounts
+        self.bet_label = tk.Label(self.main, text="Bet Amount:", font=("Arial", 16))
+        self.bet_label.pack(pady=10)
+        
+        self.bet_entry = tk.Entry(self.main, font=("Arial", 16))
+        self.bet_entry.pack(pady=10)
+
+        #method to handle bets
+        self.new_game_button = tk.Button(self.main, text="Place Bet and Start New Game", command=self.place_bet_start_new)
+        self.new_game_button.pack(pady=20)
+
+        self.bankroll_label = tk.Label(self.main, text=str(self.game.player), font =("Arial", 16))
+        self.bankroll_label.pack(pady=20)
+
+        self.update_display()
         #setting the frames
         self.dealer_frame = tk.Frame(self.main)
         self.dealer_frame.pack(pady=20)
@@ -53,7 +68,7 @@ class BJ_GUI:
         while self.game.dealer.get_value() < 17:
             self.game.dealer.add_cards(self.game.deck.deal())
             self.update_display()
-            self.check_winner()
+        self.check_winner()
 
     def check_winner(self):
         player_val = self.game.player.hand.get_value()
@@ -73,12 +88,23 @@ class BJ_GUI:
         messagebox.showinfo("BlackJack", f"{winner} Win!")
         self.new_game()
 
-    def new_game(self):
-        self.game = Game()
-        for _ in range(2):
-            self.game.player.hand.add_cards(self.game.deck.deal())
-            self.game.dealer.add_cards(self.game.deck.deal())
-        self.update_display()
+    def place_bet_start_new(self):
+        bet_amount = int(self.bet_entry.get())
+        if not self.game.player.bet(bet_amount):
+            messagebox.showinfo("Blackjack", "Insufficient Funds!")
+        else:
+            self.new_game()
+
+    # def new_game(self):
+    #     self.game.start_new_game()
+    #     self.update_display()
+    #     self.bankroll_label.config(text=str(self.game.player))
+
+        # self.game = Game()
+        # for _ in range(2):
+        #     self.game.player.hand.add_cards(self.game.deck.deal())
+        #     self.game.dealer.add_cards(self.game.deck.deal())
+        # self.update_display()
 
 if __name__ == "__main__":
     root = tk.Tk()

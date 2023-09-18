@@ -27,6 +27,13 @@ class Deck:
         random.shuffle(self.cards)
 
     def deal(self):
+        if not self.cards:
+            print("deck is empty, shuffling new deck")
+            # return self.cards.pop()
+            self.__init__()
+            self.shuffle()
+
+        # print(f"Dealing card: {self.cards[-1]}")
         return self.cards.pop()
 
 class Hand:
